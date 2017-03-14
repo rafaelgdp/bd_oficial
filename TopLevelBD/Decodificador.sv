@@ -1,17 +1,30 @@
 module Decodificador(
-  input logic [7:0]data,
-  output logic [7:0]BD_DATA_X
+  input logic [7:0]data_0,
+  input logic [7:0]data_1,
+  output logic [7:0]BD_DATA_0,
+  output logic [7:0]BD_DATA_1
 );
 
 always_comb begin
-  BD_DATA_X[7] <= data[7];
-  BD_DATA_X[6] <= BD_DATA_X[7] ^ data[6];
-  BD_DATA_X[5] <= BD_DATA_X[6] ^ data[5];
-  BD_DATA_X[4] <= BD_DATA_X[5] ^ data[4];
-  BD_DATA_X[3] <= BD_DATA_X[4] ^ data[3];
-  BD_DATA_X[2] <= BD_DATA_X[3] ^ data[2];
-  BD_DATA_X[1] <= BD_DATA_X[2] ^ data[1];
-  BD_DATA_X[0] <= BD_DATA_X[1] ^ data[0];
+	//1° BYTE
+  BD_DATA_0[7] <= data_0[7];
+  BD_DATA_0[6] <= BD_DATA_0[7] ^ data_0[6];
+  BD_DATA_0[5] <= BD_DATA_0[6] ^ data_0[5];
+  BD_DATA_0[4] <= BD_DATA_0[5] ^ data_0[4];
+  BD_DATA_0[3] <= BD_DATA_0[4] ^ data_0[3];
+  BD_DATA_0[2] <= BD_DATA_0[3] ^ data_0[2];
+  BD_DATA_0[1] <= BD_DATA_0[2] ^ data_0[1];
+  BD_DATA_0[0] <= BD_DATA_0[1] ^ data_0[0];
+  
+  //2° BYTE
+  BD_DATA_1[7] <= data_1[7];
+  BD_DATA_1[6] <= BD_DATA_1[7] ^ data_1[6];
+  BD_DATA_1[5] <= BD_DATA_1[6] ^ data_1[5];
+  BD_DATA_1[4] <= BD_DATA_1[5] ^ data_1[4];
+  BD_DATA_1[3] <= BD_DATA_1[4] ^ data_1[3];
+  BD_DATA_1[2] <= BD_DATA_1[3] ^ data_1[2];
+  BD_DATA_1[1] <= BD_DATA_1[2] ^ data_1[1];
+  BD_DATA_1[0] <= BD_DATA_1[1] ^ data_1[0];
 end
 
 endmodule
