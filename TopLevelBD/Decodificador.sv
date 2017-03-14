@@ -2,7 +2,7 @@ module Decodificador(
   input logic [7:0]data,
   output logic [7:0]BD_DATA_X
 );
-  
+
 always_comb begin
   BD_DATA_X[7] <= data[7];
   BD_DATA_X[6] <= BD_DATA_X[7] ^ data[6];
@@ -13,6 +13,5 @@ always_comb begin
   BD_DATA_X[1] <= BD_DATA_X[2] ^ data[1];
   BD_DATA_X[0] <= BD_DATA_X[1] ^ data[0];
 end
-  
-  
+
 endmodule
