@@ -11,6 +11,7 @@ module TopLevelBD(
   
   input logic [7:0]ADC,
   input logic G_CLK_RX,
+  input logic reset,
   output logic int_rx_host
 );
   
@@ -23,7 +24,8 @@ logic [7:0] BD_DATA_X;
     .ADC(ADC), 
     .int_rx_host(int_rx_host), 
     .data(data_out_dem), 
-    .BD_CONTROL(BD_CONTROL)
+    .BD_CONTROL(BD_CONTROL),
+	 .reset(reset)
   );
   
   Decodificador M2(
