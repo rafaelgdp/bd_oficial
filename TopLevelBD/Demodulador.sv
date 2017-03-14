@@ -37,7 +37,7 @@ always_ff @(posedge G_CLK_RX or posedge reset) begin
 
 	if(reset) begin // Inicio do if de reset
 		// Prioridade dada ao bit de reset
-		contaClocks = 0;
+		//contaClocks = 0; ESSE BLOCO NAO PODE ESCREVER EM CONTA CLOCKS 
 		contaZeros = 0;
 		lastSign = ADC[7];
 	end // Fim do if de reset
@@ -73,38 +73,41 @@ always_ff @(contaClocks) begin
 			Quando o currentBitAddress atinge 31, o proprio overflow se encarrega de
 			zerar o endereco.
 		*/
-		
-		if(contaZeros <= 0) begin // Inicio do if do bit de dado == 1
-			// Bit de dado eh 1
-			if(currentBitAddress < 8) begin // Inicio do if para dado em DATA_BYTE_1.
-				/*
-				Quando currentBitAddress estah entre 0 e 7 (inclusivo),
-				estamos recebendo os bits do DATA_BYTE_1.
+				if(contaZeros <= 0) begin // Inicio do if do bit de dado == 1
+					// Bit de dado eh 1
+						if(currentBitAddress < 8) begin // Inicio do if para dado em DATA_BYTE_1.
+							/*
+							Quando currentBitAddress estah entre 0 e 7 (inclusivo),
+							estamos recebendo os bits do DATA_BYTE_1.
 
-				Bits de DATA_BYTE_1: [[ ][ ][ ][ ][ ][ ][ ][ ]]
-				Indice de acesso: 	[ 7  6  5  4  3  2  1  0 ]
+							Bits de DATA_BYTE_1: [[ ][ ][ ][ ][ ][ ][ ][ ]]
+							Indice de acesso: 	[ 7  6  5  4  3  2  1  0 ]
 
-				Entao, fazendo 7 - currentBitAddress, obtemos o indice
-				para o DATA_BYTE_1.
-				*/
-				DATA_BYTE_1[7 - currentBitAddress] = 1'b1;
-			end // Fim do if para dado em DATA_BYTE_1.
-			else begin // Inicio do else para bit de dado == 1 em DATA_BYTE_0.
-				DATA_BYTE_0[15 - currentBitAddress] = 1'b1;
-			end // Fim do else para bit de dado == 1 em DATA_BYTE_0.
-      end // Fim do if do bit de dado == 1
-      else // Se chegar neste else, bit de dado eh 0.
-      begin // Inicio do else de bit de dado == 0.
-        // Bit de dado eh 0.
-        if(currentBitAddress < 8) begin // Inicio do if para dado em DATA_BYTE_1.
-          DATA_BYTE_1[7 - currentBitAddress] = 1'b0;
-        end // Fim do if para dado em DATA_BYTE_1.
-        else begin // Inicio do else para bit de dado == 1 em DATA_BYTE_0.
-          DATA_BYTE_0[15 - currentBitAddress] = 1'b0;
-        end // Fim do else para bit de dado == 1 em DATA_BYTE_0.
-      end // Fim do else de bit de dado == 0.
+							Entao, fazendo 7 - currentBitAddress, obtemos o indice
+							para o DATA_BYTE_1.
+							*/
+							DATA_BYTE_1[7 - currentBitAddress] = 1'b1;
+						end // Fim do if para dado em DATA_BYTE_1.
+						else begin // Inicio do else para bit de dado == 1 em DATA_BYTE_0.
+							DATA_BYTE_0[15 - currentBitAddress] = 1'b1;
+						end // Fim do else para bit de dado == 1 em DATA_BYTE_0.
+				end // Fim do if do bit de dado == 1
+				else // Se chegar neste else, bit de dado eh 0.
+					begin // Inicio do else de bit de dado == 0.
+					  // Bit de dado eh 0.
+					  if(currentBitAddress < 8) begin // Inicio do if para dado em DATA_BYTE_1.
+						 DATA_BYTE_1[7 - currentBitAddress] = 1'b0;
+					  end // Fim do if para dado em DATA_BYTE_1.
+					  else begin // Inicio do else para bit de dado == 1 em DATA_BYTE_0.
+						 DATA_BYTE_0[15 - currentBitAddress] = 1'b0;
+					  end // Fim do else para bit de dado == 1 em DATA_BYTE_0.
+				end // Fim do else de bit de dado == 0.
+		end // end do if top 
 		else begin // Inicio do else do top if
-			contaClocks = contaClocks;
+			//contaClocks = contaClocks; Nao da pra fazer isso porque esse always nao pode escrever em contaClocks; 
+			currentBitAddress = currentBitAddress; 
+			DATA_BYTE_1 = DATA_BYTE_1;
+			DATA_BYTE_0 = DATA_BYTE_0;
 		end // Fim do else do top if
 
 end // Fim do always de ajuste de endereco do bit de dado
@@ -112,10 +115,10 @@ end // Fim do always de ajuste de endereco do bit de dado
 
 // Always de incremento do contador de clocks
 always_ff @(posedge G_CLK_RX) begin
-	if(contaClocks == 6'd32) begin
+	if(contaClocks == 6'd31) begin
 		// Finalizou as leituras de um bit
-		contaZeros = 0;
-		contaClocks = 0;
+		//contaZeros = 0;
+		contaClocks = 0; // REVER ESSE PARTE AQUI! DEFINIR O RESET DESSA VARI´AVEL
 	end
 	else begin
 		contaClocks = contaClocks + 1;
