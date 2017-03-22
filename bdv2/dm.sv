@@ -1,17 +1,17 @@
 module dm(
 input logic clk,		//Clock
 input logic rst,		//Reset
-input logic [7:0] signal_in,	//Sinal do comparador a ser demodulado
-output logic borda, 	//Transição de "zeros" presentes no ciclo
+input logic [7:0] signal_in,	//Sinal do comparador a ser demodulado	
 output logic bitout,    //Bit demodulado  
 output logic bitsinc    //Ocorrencia de bit demodulado
 );
 
-  logic [1:0]sample_reg;	//Registro da amostra para verificação da 
+	logic [1:0]sample_reg;	//Registro da amostra para verificação da 
                             //passagem por zero
-  logic [7:0]contador;      //Contagem de amostras
-  logic flag;               //Indicação da ocorrência da primeira borda de                             //frequencia 1khz
- 
+	logic [7:0]contador;      //Contagem de amostras
+	logic flag;               //Indicação da ocorrência da primeira borda de                            
+									//frequencia 1khz
+	logic borda;					//Transição de "zeros" presentes no ciclo
 
 
 
@@ -76,15 +76,12 @@ always_ff @(posedge clk or posedge rst) begin
 	bitout <= bitout;
 end
   
-  //serve pra nd
-  /*
   always_ff @(posedge clk or posedge rst) begin
     if (rst) 	    //Etapa de detecção da ocorrência de bit demodulado
        bitsinc <= 1'b0;
     else 
       bitsinc <= (borda & flag) | ((contador > 8'd24) & borda);
   end
-	*/
-
+		
 
 endmodule
