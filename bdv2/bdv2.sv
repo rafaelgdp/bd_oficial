@@ -19,7 +19,7 @@ module bdv2 ();
 								.reset(reset),
 								.status(status),
 								.data(data_dm));
-			Decodificador DC();
+			Decodificador DCD();
 		end
 	end
 	
