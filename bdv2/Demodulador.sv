@@ -1,8 +1,8 @@
 module Demodulador(
   input logic G_CLK_RX,
   
-  //input logic  [7:0]in_signal,
-  
+  input logic  [7:0]in_signal,
+  //input logic signal,
  // output logic int_rx_host,
   //output logic [7:0] DATA_BYTE_0,
   //output logic [7:0] DATA_BYTE_1,
@@ -29,65 +29,68 @@ logic bitsync;
 logic signal;
 logic [7:0] buffer_1;
 logic [7:0] buffer_2;
-
+logic [7:0] buffer_3;  
+logic  [7:0]in_signal;
   
 logic ff1, ff2;
+  logic [7:0] test_cont;
 logic [7:0] contador;
+
 logic detectBorda;
   
  /*********************************************************************************************************************************/ 
  // Apenas para testes
-  
- logic  [7:0]in_signal;
-  always_ff @(posedge G_CLK_RX or posedge reset) 
+  /*
+  always_comb //@(posedge G_CLK_RX or posedge reset) 
   begin
     if (reset) 
-      in_signal <= 'd128;
+      in_signal <= 8'd128;
     else
       begin
-        case (contador)
-        	'd0: in_signal = 'd128;
-            'd1: in_signal = 'd153;
-            'd2: in_signal = 'd177;
-            'd3: in_signal = 'd199;
-            'd4: in_signal = 'd218;
-            'd5: in_signal = 'd234;
-            'd6: in_signal = 'd246;
-            'd7: in_signal = 'd253;
-            'd8: in_signal = 'd255;
-            'd9: in_signal = 'd253;
-            'd10: in_signal = 'd246;
-            'd11: in_signal = 'd234;
-            'd12: in_signal = 'd218;
-            'd13: in_signal = 'd199;
-            'd14: in_signal = 'd177;
-            'd15: in_signal = 'd153;
-            'd16: in_signal = 'd128;
-            'd17: in_signal = 'd103;
-            'd18: in_signal = 'd79;
-            'd19: in_signal = 'd57;
-            'd20: in_signal = 'd38;
-            'd21: in_signal = 'd22;
-            'd22: in_signal = 'd10;
-            'd23: in_signal = 'd3;
-            'd24: in_signal = 'd1;
-            'd25: in_signal = 'd3;
-            'd26: in_signal = 'd10;
-            'd27: in_signal = 'd22;
-            'd28: in_signal = 'd38;
-            'd29: in_signal = 'd57;
-            'd30: in_signal = 'd79;
-            'd31: in_signal = 'd103;
+        case (test_cont)
+        	8'd0: in_signal <= 8'd128;
+            8'd1: in_signal <= 8'd153;
+            8'd2: in_signal <= 8'd177;
+            8'd3: in_signal <= 8'd199;
+            8'd4: in_signal <= 8'd218;
+            8'd5: in_signal <= 8'd234;
+            8'd6: in_signal <= 8'd246;
+            8'd7: in_signal <= 8'd253;
+            8'd8: in_signal <= 8'd255;
+            8'd9: in_signal <= 8'd253;
+            8'd10: in_signal <= 8'd246;
+            8'd11: in_signal <= 8'd234;
+            8'd12: in_signal <= 8'd218;
+            8'd13: in_signal <= 8'd199;
+            8'd14: in_signal <= 8'd177;
+            8'd15: in_signal <= 8'd153;
+            8'd16: in_signal <= 8'd128;
+            8'd17: in_signal <= 8'd103;
+            8'd18: in_signal <= 8'd79;
+            8'd19: in_signal <= 8'd57;
+            8'd20: in_signal <= 8'd38;
+            8'd21: in_signal <= 8'd22;
+            8'd22: in_signal <= 8'd10;
+            8'd23: in_signal <= 8'd3;
+            8'd24: in_signal <= 8'd1;
+            8'd25: in_signal <= 8'd3;
+            8'd26: in_signal <= 8'd10;
+            8'd27: in_signal <= 8'd22;
+            8'd28: in_signal <= 8'd38;
+            8'd29: in_signal <= 8'd57;
+            8'd30: in_signal <= 8'd79;
+            8'd31: in_signal <= 8'd103;
         endcase
       end
   end
-  
+  */
 
 /********************************************************************************************************************************/
 
   
-// Grampeador
-always_ff @(posedge G_CLK_RX or posedge reset) 
+// Grampeador 
+  
+always_comb //@(posedge G_CLK_RX or posedge reset) 
  begin
    if (reset)
      begin
@@ -105,17 +108,20 @@ always_ff @(posedge G_CLK_RX or posedge reset)
   
   
 // status
+  
 always_ff @(posedge G_CLK_RX or posedge reset) 
  begin
    if (reset)
      begin
    		buffer_1 <= 0;
        	buffer_2 <= 0;
+        buffer_3 <= 0;
      end 
    else
      begin
      	buffer_1 <= in_signal;
         buffer_2 <= buffer_1;
+        buffer_3 <= buffer_2;
      end
 end
   
@@ -128,7 +134,7 @@ always_ff @(posedge G_CLK_RX or posedge reset)
      end
    else
      begin
-       if (buffer_1 == buffer_2)
+       if ((buffer_1 == buffer_2) && (buffer_2 == buffer_3))
          begin
            status <= 'd0;
          end
@@ -231,6 +237,21 @@ begin
         bitsync <= 1;
       else
         bitsync <= 0;
+    end
+end
+  
+always @(posedge G_CLK_RX or posedge reset)
+begin
+  if (reset)
+    begin
+    	test_cont <= 8'd0;
+    end
+  else    
+  	begin
+      if (test_cont > 31)
+      	test_cont <= 0;
+      else
+        test_cont <= test_cont + 1;
     end
 end
   
